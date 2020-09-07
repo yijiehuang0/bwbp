@@ -1,0 +1,17 @@
+export const Colors = {
+  brandGray: '#BBBBBB',
+  brandGrayTrans: '#F0EDED',
+  brandOlive: '#758475',
+  brandRed: '#C03440',
+  brandYellow: '#F0E64E',
+  brandBlue: '#B3CEEA',
+  brandBlueTrans: '#E8F0F9',
+  shadowGray: '#E3E1E1',
+  iconGray: '#BBBBBB',
+  fontGray: '#202020',
+  darkOlive: '#0C360C',
+  borderGray: '#C4C4C4',
+  iconBlue: '#001F3F',
+  backgroundGray: '#F5F5F5',
+  navbarBlue: '#00203F',
+};

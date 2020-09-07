@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "1951 Coffee Trainee",
+    "slug": "1951-coffee-trainee",
+    "privacy": "public",
+    "platforms": ["ios", "android", "web"],
+    "notification": {
+      "icon": "./assets/imgs/notif_icon.png",
+      "iosDisplayInForeground": true
+    },
+    "version": "1.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/imgs/app_icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"],
+    "android": {
+      "package": "org.calblueprint.trainee1951Coffee",
+      "versionCode": 4,
+      "permissions": []
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "org.calblueprint.1951CoffeeTrainee",
+      "buildNumber": "4"
+    },
+    "hooks": {}
+  }
+}
