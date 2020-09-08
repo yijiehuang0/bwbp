@@ -15,11 +15,7 @@ import { Overlay, CheckBox, Button } from 'react-native-elements';
 import { cloneDeep } from 'lodash';
 
 interface Availability {
-  monday: boolean;
-  tuesday: boolean;
-  wednesday: boolean;
-  thursday: boolean;
-  friday: boolean;
+    [day: string] : boolean;
 }
 
 interface JobsScreenState {
@@ -36,7 +32,7 @@ interface JobsScreenProps {
 }
 
 /**
- * We have a feature request! 
+ * We have a feature request!
  *
  * Write a function that filters out jobs based on the trainees weekly availability.
  * Bonus: Try wrapping the filtering logic in an overlay component.
@@ -102,13 +98,19 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
    */
   filterJobs = (jobs: JobRecord[], availability: Availability): void => {
     // Step 0: Clone the jobs input
-    const newJobs: JobRecord[] = cloneDeep(jobs);
-    console.log(newJobs, availability);
-
+    var newJobs: JobRecord[] = cloneDeep(jobs).filter(function(job:JobRecord) {
+        var day: string;
+        for(day of job.schedule) {
+          day = day.toLowerCase();
+          if(availability[day] == true) {
+              return true;
+          }
+        }
+    })
+    console.log(newJobs)
     // Step 1: Remove jobs where the schedule doesn't align with the users' availability.
-
     // Step 2: Save into state
-    this.setState({ jobs: newJobs });
+    this.setState({ jobs: newJobs});
   };
 
   getStatus = (jobs: JobRecord[]): Status => {
