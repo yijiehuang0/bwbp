@@ -110,9 +110,7 @@ export class JobCard extends React.Component<CardProps, CardState> {
           <BaseComponents.SubjectOverflow>{storeName}</BaseComponents.SubjectOverflow>
           <Styles.Info>{addr.cityState}</Styles.Info>
         </Styles.Header>
-
         <BaseComponents.Line />
-
         <Styles.EventColumn>
           {this.eventInfo('time', hourswk)}
           {this.eventInfo('sun', scheduleShow)}

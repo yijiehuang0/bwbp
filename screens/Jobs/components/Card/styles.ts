@@ -33,6 +33,14 @@ export const Info = styled.Text`
   width: 90;
 `;
 
+export const OverlayTitle= styled.Text`
+  font-size: 20;
+  color: ${Colors.fontGray};
+  textAlign: center;
+  fontWeight: bold;
+  paddingBottom: 20;
+`;
+
 export const Status = styled.Text`
   font-size: 12px;
   color: ${Colors.fontGray};
