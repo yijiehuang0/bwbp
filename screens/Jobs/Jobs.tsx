@@ -1,5 +1,4 @@
 import React from 'react';
-import { View } from 'react-native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { GlobalContext } from '@components/ContextProvider';
 import { BaseScreen } from '../BaseScreen/BaseScreen';
@@ -9,18 +8,12 @@ import { getJobs, updateJob } from '@utils/airtable/requests';
 import { Status } from '../StatusScreen/StatusScreen';
 import ContactsModal from '@components/ContactsModal/ContactsModal';
 import { StatusController } from '@screens/StatusScreen/StatusController';
+import JobsFilterOverlay from './components/Card/JobsFilterOverlay';
+import { Availability } from './components/Card/JobsFilterOverlay';
+import { Button } from 'react-native-elements';
+import { View } from 'react-native';
 
-// BWBP
-import { Overlay, CheckBox, Button } from 'react-native-elements';
 import { cloneDeep } from 'lodash';
-
-interface Availability {
-  monday: boolean;
-  tuesday: boolean;
-  wednesday: boolean;
-  thursday: boolean;
-  friday: boolean;
-}
 
 interface JobsScreenState {
   title: string;
@@ -28,23 +21,13 @@ interface JobsScreenState {
   refreshing: boolean;
   staticHeader: boolean;
   status: Status;
-  availability: Availability;
+  filter: boolean;
 }
 
 interface JobsScreenProps {
   navigation: BottomTabNavigationProp;
 }
 
-/**
- * We have a feature request! 
- *
- * Write a function that filters out jobs based on the trainees weekly availability.
- * Bonus: Try wrapping the filtering logic in an overlay component.
- *
- * Sources:
- * - Compontent Library: https://react-native-elements.github.io/react-native-elements/docs/button.html
- *
- */
 export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState> {
   static contextType = GlobalContext;
 
@@ -57,14 +40,10 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
       refreshing: true,
       staticHeader: false,
       status: Status.none,
-      availability: {
-        monday: false,
-        tuesday: false,
-        wednesday: true,
-        thursday: true,
-        friday: false,
-      },
+      filter: false,
     };
+
+    this.toggleFilter = this.toggleFilter.bind(this);
   }
 
   componentDidMount(): void {
@@ -85,7 +64,7 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
     );
   };
 
-  fetchRecords = async (): Promise<void> => {
+  fetchRecords = (): void => {
     this.setState({
       refreshing: true,
     });
@@ -97,17 +76,18 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
     });
   };
 
-  /**
-   * TODO: Write filterJobs function that updates the components' state with jobs that align with the users' weekly schedule.
-   */
+  displayJobs = (availability: Availability): void => {
+    this.filterJobs(getJobs(), availability);
+  };
+
   filterJobs = (jobs: JobRecord[], availability: Availability): void => {
-    // Step 0: Clone the jobs input
-    const newJobs: JobRecord[] = cloneDeep(jobs);
-    console.log(newJobs, availability);
-
-    // Step 1: Remove jobs where the schedule doesn't align with the users' availability.
-
-    // Step 2: Save into state
+    const newJobs: JobRecord[] = cloneDeep(jobs).filter(function(job: JobRecord) {
+      for (var day of job.schedule) {
+        if (availability[day.toLowerCase()] == true && availability.hourswk >= +job.hours) {
+          return true;
+        }
+      }
+    });
     this.setState({ jobs: newJobs });
   };
 
@@ -121,6 +101,10 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
     }
   };
 
+  toggleFilter = (): void => {
+    this.setState({ filter: !this.state.filter });
+  };
+
   setHeader = (): void => {
     this.setState({ staticHeader: true });
   };
@@ -130,7 +114,6 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
   }
 
   render() {
-    const { monday, tuesday, wednesday, thursday, friday } = this.state.availability;
     return (
       <BaseScreen
         title={this.state.title}
@@ -145,62 +128,14 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
           />
         }
       >
-        <View>
-          <CheckBox
-            title="Monday"
-            checked={monday}
-            onPress={() =>
-              this.setState(prev => {
-                return { ...prev, availability: { ...prev.availability, monday: !monday } };
-              })
-            }
-          />
-          <CheckBox
-            title="Tuesday"
-            checked={tuesday}
-            onPress={() =>
-              this.setState(prev => {
-                return { ...prev, availability: { ...prev.availability, tuesday: !tuesday } };
-              })
-            }
-          />
-          <CheckBox
-            title="Wednesday"
-            checked={wednesday}
-            onPress={(): void =>
-              this.setState(prev => {
-                return { ...prev, availability: { ...prev.availability, wednesday: !wednesday } };
-              })
-            }
-          />
-          <CheckBox
-            title="Thursday"
-            checked={thursday}
-            onPress={(): void =>
-              this.setState(prev => {
-                return { ...prev, availability: { ...prev.availability, thursday: !thursday } };
-              })
-            }
-          />
-          <CheckBox
-            title="Friday"
-            checked={friday}
-            onPress={(): void =>
-              this.setState(prev => {
-                return { ...prev, availability: { ...prev.availability, friday: !friday } };
-              })
-            }
-          />
-        </View>
         <View style={{ alignItems: 'center', marginVertical: 20 }}>
-          <Button
-            title="Filter Search"
-            containerStyle={{ width: '50%' }}
-            onPress={(): void => {
-              this.filterJobs(getJobs(), this.state.availability);
-            }}
-          />
+          <Button title="Filter Search" containerStyle={{ width: '50%' }} onPress={this.toggleFilter} />
         </View>
+        <JobsFilterOverlay
+          displayJobs={this.displayJobs}
+          toggleFilter={this.toggleFilter}
+          visible={this.state.filter}
+        />
         <StatusController defaultChild={this.renderCards()} status={this.state.status} />
       </BaseScreen>
     );

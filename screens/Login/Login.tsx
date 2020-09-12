@@ -21,7 +21,7 @@ interface LoginScreenProps {
  * 2. The image is too big! Check styles.ts and learn how the component was styled.
  *
  * TIPS:
- * - Shake your phone to reload the app! 
+ * - Shake your phone to reload the app!
  * - Hit Command + S in VSCode to save your code. The simulator will automatically reload.
  */
 export default class LoginScreen extends React.Component<LoginScreenProps, LoginScreenState> {
@@ -48,6 +48,9 @@ export default class LoginScreen extends React.Component<LoginScreenProps, Login
     return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <ScrollView style={{ flex: 1 }}>
+          <ImageContainer>
+            <LoginImg source={require('@assets/imgs/colored_icon.png')} resizeMode="center" />
+          </ImageContainer>
           <LoginHeader>Welcome</LoginHeader>
           <LoginText>Username</LoginText>
           <LoginInput
@@ -62,9 +65,6 @@ export default class LoginScreen extends React.Component<LoginScreenProps, Login
             }
             value={this.state.user.uname}
           />
-          <ImageContainer>
-            <LoginImg source={require('@assets/imgs/colored_icon.png')} resizeMode="center" />
-          </ImageContainer>
           <LoginText>Password</LoginText>
           <LoginInput
             secureTextEntry
