@@ -1,6 +1,7 @@
 import styled from 'styled-components/native';
 import { Colors } from '@assets/Colors';
 import * as BaseComponents from '@components/BaseComponents';
+import {CheckBox} from 'react-native-elements';
 
 export const Row = styled.View`
   display: flex;
@@ -34,11 +35,31 @@ export const Info = styled.Text`
 `;
 
 export const OverlayTitle= styled.Text`
-  font-size: 20;
+  font-size: 30;
   color: ${Colors.fontGray};
   textAlign: center;
   fontWeight: bold;
-  paddingBottom: 20;
+  paddingTop: 15;
+  paddingBottom: 15;
+`;
+
+export const OverlaySubtitle = styled.Text`
+  font-size: 15;
+  color: ${Colors.brandOlive};
+  textAlign: left;
+  fontWeight: bold;
+  paddingLeft: 10;
+`;
+
+export const HoursInput = styled.TextInput`
+  border-color: ${Colors.brandGray};
+  border-radius: 5;
+  border-width: 2;
+  padding-horizontal: 5%;
+  alignSelf: center;
+  font-size: 15;
+  width: 93%;
+  height: 5%;
 `;
 
 export const Status = styled.Text`

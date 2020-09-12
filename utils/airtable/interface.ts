@@ -18,6 +18,8 @@ interface Record {
   rid: string;
 }
 
+
+// UserRecord an interface for a user
 export interface UserRecord extends Record {
   uname: string;
   password: string;

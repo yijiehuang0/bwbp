@@ -1,6 +1,7 @@
 import React, { createContext } from 'react';
 
 export const GlobalContext = createContext(null);
+
 interface ContextProviderProps {
   state: unknown;
   children: unknown;

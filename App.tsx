@@ -9,6 +9,12 @@ import ContextProvider from './components/ContextProvider';
 import { storeUser } from '@utils/airtable/requests';
 import { UserMock } from '@utils/airtable/mocks';
 
+
+// Global props are available to everyone
+// loggedIn -> user logged in?
+// pocs -> string->Contacts
+// setUser for the global state
+// setNavigation for global state
 interface GlobalProps {
   loggedIn: boolean;
   user: UserRecord;
@@ -18,6 +24,7 @@ interface GlobalProps {
   setNavigation: Function;
 }
 
+// State of this app
 interface AppState {
   isLoaded: boolean;
   globalProps: GlobalProps;
@@ -26,7 +33,7 @@ interface AppState {
 export default class App extends React.Component<{}, AppState> {
   constructor(props) {
     super(props);
-
+    // initalize the state
     this.state = {
       isLoaded: false,
       globalProps: {
@@ -38,11 +45,16 @@ export default class App extends React.Component<{}, AppState> {
         setNavigation: this.setNavigation,
       },
     };
+
+    // bind actions that will change the state
     this.setUser = this.setUser.bind(this);
     this.setPocs = this.setPocs.bind(this);
     this.setNavigation = this.setNavigation.bind(this);
   }
 
+
+  //Render is set first, then we set the default font
+  // Then intialize the state
   async componentDidMount() {
     await this.setDefaultFont();
     this.setState({
@@ -50,6 +62,7 @@ export default class App extends React.Component<{}, AppState> {
     });
   }
 
+  // Asynchronous function that gets the user record
   setUser = async (user: UserRecord) => {
     await storeUser(user);
     const { globalProps } = this.state;
@@ -62,6 +75,7 @@ export default class App extends React.Component<{}, AppState> {
     });
   };
 
+  // Point of contacts
   setPocs = (pocs): void => {
     const { globalProps } = this.state;
     this.setState({
@@ -71,6 +85,7 @@ export default class App extends React.Component<{}, AppState> {
       },
     });
   };
+
 
   setNavigation = (navigation): void => {
     const { globalProps } = this.state;

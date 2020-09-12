@@ -10,6 +10,8 @@ import ContactsModal from '@components/ContactsModal/ContactsModal';
 import { StatusController } from '@screens/StatusScreen/StatusController';
 import JobsFilterOverlay from './components/Card/JobsFilterOverlay';
 import { Availability } from './components/Card/JobsFilterOverlay';
+import { Button } from 'react-native-elements';
+import { View } from 'react-native';
 
 import { cloneDeep } from 'lodash';
 
@@ -26,16 +28,6 @@ interface JobsScreenProps {
   navigation: BottomTabNavigationProp;
 }
 
-/**
- * We have a feature request!
- *
- * Write a function that filters out jobs based on the trainees weekly availability.
- * Bonus: Try wrapping the filtering logic in an overlay component.
- *
- * Sources:
- * - Compontent Library: https://react-native-elements.github.io/react-native-elements/docs/button.html
- *
- */
 export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState> {
   static contextType = GlobalContext;
 
@@ -50,6 +42,8 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
       status: Status.none,
       filter: false,
     };
+
+    this.toggleFilter = this.toggleFilter.bind(this);
   }
 
   componentDidMount(): void {
@@ -70,7 +64,7 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
     );
   };
 
-  fetchRecords = async (): Promise<void> => {
+  fetchRecords = (): void => {
     this.setState({
       refreshing: true,
     });
@@ -82,14 +76,14 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
     });
   };
 
-  overlayCallBack = async (availability: Availability): Promise<void> => {
+  displayJobs = (availability: Availability): void => {
     this.filterJobs(getJobs(), availability);
   };
 
-  filterJobs = async (jobs: JobRecord[], availability: Availability): Promise<void> => {
+  filterJobs = (jobs: JobRecord[], availability: Availability): void => {
     const newJobs: JobRecord[] = cloneDeep(jobs).filter(function(job: JobRecord) {
       for (var day of job.schedule) {
-        if (availability[day.toLowerCase()] == true) {
+        if (availability[day.toLowerCase()] == true && availability.hourswk >= +job.hours) {
           return true;
         }
       }
@@ -107,6 +101,10 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
     }
   };
 
+  toggleFilter = (): void => {
+    this.setState({ filter: !this.state.filter });
+  };
+
   setHeader = (): void => {
     this.setState({ staticHeader: true });
   };
@@ -115,7 +113,6 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
     return <>{this.state.jobs.map((record, index) => this.createJobCard(record, index))}</>;
   }
 
-  // this should conditionally render based off of the current need to filter or not
   render() {
     return (
       <BaseScreen
@@ -131,7 +128,14 @@ export class JobsScreen extends React.Component<JobsScreenProps, JobsScreenState
           />
         }
       >
-        <JobsFilterOverlay callback={this.overlayCallBack} />
+        <View style={{ alignItems: 'center', marginVertical: 20 }}>
+          <Button title="Filter Search" containerStyle={{ width: '50%' }} onPress={this.toggleFilter} />
+        </View>
+        <JobsFilterOverlay
+          displayJobs={this.displayJobs}
+          toggleFilter={this.toggleFilter}
+          visible={this.state.filter}
+        />
         <StatusController defaultChild={this.renderCards()} status={this.state.status} />
       </BaseScreen>
     );
